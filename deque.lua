@@ -88,6 +88,9 @@ function deque.test()
     assert(deque.pop1(d) == 2)
     assert(deque.pop1(d) == 1)
     assert(deque.size(d) == 0)
+
+    assert(deque.pop1(d) == nil)
+    assert(deque.pop2(d) == nil)
 end
 
 if arg ~= nil then
