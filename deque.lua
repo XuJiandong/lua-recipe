@@ -1,5 +1,6 @@
 #!/usr/bin/env lua
 
+module("lua_recipe_deque", package.seeall)
 
 -- objects can only be pushed/popped on two ends
 -- implemented by 2 tables (stacks)
@@ -91,10 +92,7 @@ function deque.test()
 
     assert(deque.pop1(d) == nil)
     assert(deque.pop2(d) == nil)
+    print("Deque test passed")
 end
 
-if arg ~= nil then
-    deque.test()
-else
-    return deque
-end
+return deque
