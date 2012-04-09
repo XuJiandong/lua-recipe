@@ -1,7 +1,5 @@
 
 
-module ("lua_recipe_fuzzy_find", package.seeall)
-
 local ff = {}
 
 -- from https://github.com/rrthomas/lua-stdlib/blob/origin/src/lcs.lua

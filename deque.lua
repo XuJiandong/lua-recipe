@@ -1,7 +1,5 @@
 #!/usr/bin/env lua
 
-module("lua_recipe_deque", package.seeall)
-
 -- objects can only be pushed/popped on two ends
 -- implemented by 2 tables (stacks)
 -- lua array is fater and use less space than normal table.
