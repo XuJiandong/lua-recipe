@@ -73,6 +73,7 @@ function ff.find(s, set, must)
         end
         if #r > bestMatched.count and must then
             bestMatched.s = v
+            bestMatched.count = #r
         end
     end
     -- at least one sequence matched
