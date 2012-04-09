@@ -1,5 +1,4 @@
 
-
 local ff = {}
 
 -- from https://github.com/rrthomas/lua-stdlib/blob/origin/src/lcs.lua
@@ -58,7 +57,7 @@ local function longestCommonSubseq (a, b, s)
   return s
 end
 
--- return a set of strings which are fuzzy matched with "s"
+-- return a set of sequences which are fuzzy matched with "s"
 -- from "set"
 -- if "must" is not nil, at least return one (best matched)
 -- otherwise, it might return empty 
@@ -69,28 +68,65 @@ function ff.find(s, set, must)
     bestMatched.s     = nil 
     for i, v in ipairs(set) do
         local r = longestCommonSubseq(s, v, {})
-        if table.concat(r) == s then 
+        if ff.sequenceEqual(r,s) then 
             table.insert(result, v) 
         end
         if #r > bestMatched.count and must then
             bestMatched.s = v
         end
     end
-    -- at least one string matched
+    -- at least one sequence matched
     if #result == 0 and must then
         table.insert(result, bestMatched.s)
     end
     return result
 end
 
-function ff.test()
-    local set = {"aaabbbccc", "acb", "aaabbbcccccccc", "abc"}
-    local r = ff.find("abc", set, true)
-    for i, v in ipairs(r) do
-        print(v)
+function ff.stringToSequence(s)
+    return {string.byte(s, 1, #s)}
+end
+
+function ff.sequenceToString(s)
+    return string.char(unpack(s))
+end
+
+function ff.stringSetToSequenceSet(s)
+    local set = {}
+    for _, v in ipairs(s) do
+        table.insert(set, ff.stringToSequence(v))
     end
+    return set
+end
+
+function ff.sequenceSetToStringSet(s)
+    local stringSet = {}
+    for _, v in ipairs(s) do
+        table.insert(stringSet, ff.sequenceToString(v))
+    end
+    return stringSet
+end
+
+function ff.sequenceEqual(a, b)
+    if #a ~= #b then
+        return false
+    end
+    for i = 1, #a do
+        if a[i] ~= b[i] then return false end
+    end
+    return true
+end
+
+function ff.test()
+    local set = ff.stringSetToSequenceSet{"aaabbbccc", "acb", "aaabbbcccccccc", "abc"}
+    local s = ff.stringToSequence"abc"
+    assert("abc" == ff.sequenceToString(s))
+    local r = ff.find(s, set, false)
+    local set = ff.sequenceSetToStringSet(r)
+    assert(set[1] == "aaabbbccc")
+    assert(set[2] == "aaabbbcccccccc")
+    assert(set[3] == "abc")
+    print("Fuzzy find test passed")
 end
 
 return ff
-
 
