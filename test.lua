@@ -9,3 +9,5 @@ ff.test()
 local cl = require("command_line")
 cl.test()
 
+local hook = require("hook")
+hook.test()
