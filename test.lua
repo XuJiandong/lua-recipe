@@ -11,3 +11,7 @@ cl.test()
 
 local hook = require("hook")
 hook.test()
+
+local heap = require("heap")
+heap.test()
+
