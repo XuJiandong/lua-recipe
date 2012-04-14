@@ -15,3 +15,6 @@ hook.test()
 local heap = require("heap")
 heap.test()
 
+local priority_queue = require("priority_queue")
+priority_queue.test()
+
