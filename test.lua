@@ -21,3 +21,6 @@ priority_queue.test()
 local memoize = require("memoize")
 memoize.test()
 
+local popen = require("popen")
+popen.test()
+
