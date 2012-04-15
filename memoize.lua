@@ -126,6 +126,7 @@ function pkg.memoize(f)
     return buildMemoizedFunction(f)
 end
 
+-- this is a simple version which only accepts one paramter.
 function pkg.simpleMemoize(fn)
     local t = {}
     return function(x)

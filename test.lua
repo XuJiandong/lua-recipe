@@ -18,3 +18,6 @@ heap.test()
 local priority_queue = require("priority_queue")
 priority_queue.test()
 
+local memoize = require("memoize")
+memoize.test()
+
