@@ -10,8 +10,9 @@ local cl = {}
 -- {["bla"] = true, ["tux"] = "beep", ["baz"] = true}, "foo", "bar".
 function cl.parse_flags(...)
    local args = {...}
+   local argc = select("#", ...)
    local flags = {}
-   for i = #args, 1, -1 do
+   for i = argc, 1, -1 do
       local flag = args[i]:match("^%-%-(.*)")
       if flag then
          local var,val = flag:match("([a-z_%-]*)=(.*)")
