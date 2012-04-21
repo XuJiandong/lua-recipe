@@ -37,7 +37,7 @@ function hook:hook(tbl, func, printTrace)
     local newFunc = function (...)
         self:output("hooked: entering " .. func)
         if printTrace then
-            self:output("Trace : " .. debug.traceback())
+            printTrace({...}) 
         end
         local arg = {origFunc(...)}
         self:output("hooked: leaving  " .. func)
@@ -101,7 +101,7 @@ function hook.test()
     function instance:testFunction(param1, param2)
         _print("instance:TestFunction()")
     end
-    hook:hook(instance,"testFunction", true)
+    hook:hook(instance,"testFunction", function(t) _print("***") end)
     instance:testFunction("first", "sencond")
     _print("restoreAll()")
     hook:restoreAll()
@@ -118,7 +118,7 @@ function hook.test()
     assert(result[9] == "start testing on functions in table")
     assert(result[10] == "hooked: testFunction")
     assert(result[11] == "hooked: entering testFunction")
-    -- trace skipped, too long
+    assert(result[12] == "***")
     assert(result[13] == "instance:TestFunction()")
     assert(result[14] == "hooked: leaving  testFunction")
     assert(result[15] == "restoreAll()")
