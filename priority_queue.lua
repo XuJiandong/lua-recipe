@@ -225,6 +225,7 @@ end
 
 function pkg.up(h, obj)
     local lt = comps[h] or error "Not a heap"
+    -- TODO: undefined i
     return upi(h, lt, obj, i)
 end
 

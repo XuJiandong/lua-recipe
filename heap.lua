@@ -188,8 +188,8 @@ function pkg.replace(h, obj)
 end
 
 function pkg.limitput(h, n, obj)
-    if getn(h) < n then put(h, obj)
-    else return replace(h, obj)
+    if getn(h) < n then pkg.put(h, obj)
+    else return pkg.replace(h, obj)
     end
 end
 
@@ -210,6 +210,7 @@ function pkg.factory(lt)
             upi(self, lt, v, i)
             n = i
         end)
+        -- TODO: h is undefined
         setn(h, n)
         return self
     end
