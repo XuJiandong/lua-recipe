@@ -23,9 +23,15 @@ while true do
     end
 end
 
+local r, msg = loadfile("./user_defined_global.lua")
+local U = {}
+if r then
+    U = r()
+end
+
 for k, v in pairs(G) do
-    -- TODO: user defined filter here
-    if not S[k] and not _G[k] then
+    if not S[k] and not _G[k] and not U[k] then
         print(k, " may be undefined in ", v)
     end
 end
+
