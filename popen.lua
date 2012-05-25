@@ -16,6 +16,17 @@ function pkg.getFiles(path)
     return result
 end
 
+function pkg.exist(f)
+    -- also redirect stderr to stdout
+    local cmd = "ls " .. f .. " 2>&1"
+    local output = io.popen(cmd, "r")
+    for line in output:lines() do
+        if string.find(line, "cannot access") then
+            return false
+        end
+    end
+    return true
+end
 
 function pkg.test()
     local function fileExists(f, files)
@@ -29,6 +40,7 @@ function pkg.test()
     assert(fileExists("yes", files))
     assert(fileExists("id", files))
     assert(fileExists("top", files))
+    assert(pkg.exist("/usr/bin"))
     print("Popen test passed")
 end
 
