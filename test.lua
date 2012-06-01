@@ -24,3 +24,6 @@ memoize.test()
 local popen = require("popen")
 popen.test()
 
+local st = require("serialize_table")
+st.test()
+
