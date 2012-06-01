@@ -1,37 +1,42 @@
 local pkg = {}
 
--- modified from http://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-table-fromstringstringtable-functions
--- TODO: string concating is inefficient in lua
-function pkg.serializeTable(val, name, skipnewlines, depth)
-    skipnewlines = skipnewlines or false
+function pkg.serializeTable0(val, name, depth)
     depth = depth or 0
-    local tmp = string.rep(" ", depth)
+    local res = {}
     if name then 
         if type(name) == "string" then
-            tmp = string.format("%s[%q] = ", tmp, name)
+            table.insert(res,  string.rep(" ", depth) .. string.format("[%q]=", name))
         elseif type(name) == "number" then
-            tmp = string.format("%s[%d] = ", tmp, name)
+            table.insert(res, string.rep(" ", depth) .. string.format("[%d]=", name))
         else
             assert("not implemented")
         end
     end
     if type(val) == "table" then
-        tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
+        table.insert(res, "{\n")
         for k, v in pairs(val) do
-            tmp =  tmp .. pkg.serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+            local tmp =  pkg.serializeTable0(v, k, depth + 1)
+            for _, v in ipairs(tmp) do
+                table.insert(res, v)
+            end
+            table.insert(res, ",\n")
         end
-        tmp = tmp .. string.rep(" ", depth) .. "}"
-    elseif type(val) == "number" then
-        tmp = tmp .. tostring(val)
+        table.insert(res, string.rep(" ", depth) .. "}")
+    elseif type(val) == "number" or type(val) == "boolean" then
+        table.insert(res, tostring(val))
     elseif type(val) == "string" then
-        tmp = tmp .. string.format("%q", val)
-    elseif type(val) == "boolean" then
-        tmp = tmp .. tostring(val)
+        table.insert(res, string.format("%q", val)) 
     else
-        tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
+        assert("not implmented")
     end
 
-    return tmp
+    return res
+end
+
+-- it's faster to push string into table then concat them 
+function pkg.serializeTable(t)
+    local s = pkg.serializeTable0(t)
+    return table.concat(s, "")
 end
 
 function pkg.test()
@@ -41,7 +46,10 @@ function pkg.test()
         check = true,
         ["value"] = 100,
         ["value2"] = 1000,
+        ["value3"] = 1000.1,
         test = {
+            "first inner",
+            "second innder",
             inner = 1001,
             inner2 = "hello,world",
         }
@@ -50,8 +58,10 @@ function pkg.test()
     local o = assert(loadstring("return " .. s))()
     assert(o[1] == t[1])
     assert(o[2] == t[2])
+    assert(o.value3 == t.value3)
     assert(o.check == t.check)
     assert(o.test.inner == t.test.inner)
+    assert(o.test[1] == t.test[1])
     print("Serialize table is passed")
 end
 
