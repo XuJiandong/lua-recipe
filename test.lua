@@ -27,3 +27,6 @@ popen.test()
 local st = require("serialize_table")
 st.test()
 
+local xml = require("xml")
+xml.test()
+
