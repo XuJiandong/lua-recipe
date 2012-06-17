@@ -35,7 +35,7 @@ function pkg.loadFileBz2(file)
 end
 
 function pkg.loadFileGzip(file)
-    local output = io.popen("zcat " .. file)
+    local output = io.popen("gzip -cd " .. file)
     local all = output:read("*a")
     return loadstring(all)
 end
