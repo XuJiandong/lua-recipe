@@ -28,6 +28,18 @@ function pkg.exist(f)
     return true
 end
 
+function pkg.loadFileBz2(file)
+    local output = io.popen("bzip2 -d -c -k " .. file)
+    local all = output:read("*a")
+    return loadstring(all)
+end
+
+function pkg.loadFileGzip(file)
+    local output = io.popen("zcat " .. file)
+    local all = output:read("*a")
+    return loadstring(all)
+end
+
 function pkg.test()
     local function fileExists(f, files)
         for i, v in ipairs(files) do
@@ -41,6 +53,14 @@ function pkg.test()
     assert(fileExists("id", files))
     assert(fileExists("top", files))
     assert(pkg.exist("/usr/bin"))
+
+    local a = pkg.loadFileBz2("./test/popen.lua.bz2")
+    local aa =  assert(a)()
+    assert(aa.loadFileBz2)
+    local b = pkg.loadFileGzip("./test/popen.lua.gz")
+    local bb = assert(b)()
+    assert(bb.loadFileGzip)
+
     print("Popen test passed")
 end
 
