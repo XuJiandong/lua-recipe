@@ -44,6 +44,7 @@ function pkg.test()
     local function fileExists(f, files)
         for i, v in ipairs(files) do
             if f == v then return true end
+            if v:find(f) then return true end
         end
         return false 
     end

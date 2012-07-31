@@ -30,3 +30,6 @@ st.test()
 local xml = require("xml")
 xml.test()
 
+local string_util = require("string_util")
+string_util.test()
+
