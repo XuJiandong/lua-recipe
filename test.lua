@@ -33,3 +33,6 @@ xml.test()
 local string_util = require("string_util")
 string_util.test()
 
+local base64 = require("base64")
+base64.test()
+
