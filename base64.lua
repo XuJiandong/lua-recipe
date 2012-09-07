@@ -46,7 +46,13 @@ function pkg.enc(data)
 end
 
 -- decryption table
-local base64bytes = {['A']=0,['B']=1,['C']=2,['D']=3,['E']=4,['F']=5,['G']=6,['H']=7,['I']=8,['J']=9,['K']=10,['L']=11,['M']=12,['N']=13,['O']=14,['P']=15,['Q']=16,['R']=17,['S']=18,['T']=19,['U']=20,['V']=21,['W']=22,['X']=23,['Y']=24,['Z']=25,['a']=26,['b']=27,['c']=28,['d']=29,['e']=30,['f']=31,['g']=32,['h']=33,['i']=34,['j']=35,['k']=36,['l']=37,['m']=38,['n']=39,['o']=40,['p']=41,['q']=42,['r']=43,['s']=44,['t']=45,['u']=46,['v']=47,['w']=48,['x']=49,['y']=50,['z']=51,['0']=52,['1']=53,['2']=54,['3']=55,['4']=56,['5']=57,['6']=58,['7']=59,['8']=60,['9']=61,['+']=62,['/']=63,['=']=nil}
+local base64bytes = {['A']=0, ['B']=1, ['C']=2, ['D']=3, ['E']=4, ['F']=5, ['G']=6, ['H']=7, ['I']=8, ['J']=9,
+                     ['K']=10,['L']=11,['M']=12,['N']=13,['O']=14,['P']=15,['Q']=16,['R']=17,['S']=18,['T']=19,
+                     ['U']=20,['V']=21,['W']=22,['X']=23,['Y']=24,['Z']=25,['a']=26,['b']=27,['c']=28,['d']=29,
+                     ['e']=30,['f']=31,['g']=32,['h']=33,['i']=34,['j']=35,['k']=36,['l']=37,['m']=38,['n']=39,
+                     ['o']=40,['p']=41,['q']=42,['r']=43,['s']=44,['t']=45,['u']=46,['v']=47,['w']=48,['x']=49,
+                     ['y']=50,['z']=51,['0']=52,['1']=53,['2']=54,['3']=55,['4']=56,['5']=57,['6']=58,['7']=59,
+                     ['8']=60,['9']=61,['+']=62,['/']=63,['=']=nil}
 
 -- function decode
 -- decode base64 input to string
@@ -55,9 +61,13 @@ function pkg.dec(data)
     local result=""
     for dpos=0,string.len(data)-1,4 do
         for char=1,4 do 
-            chars[char] = base64bytes[(string.sub(data,(dpos+char),(dpos+char)) or "=")] 
+            local i = string.sub(data,(dpos+char),(dpos+char)) or "=" 
+            chars[char] = base64bytes[i]
         end
-        result = string.format('%s%s%s%s',result,string.char(lor(lsh(chars[1],2), rsh(chars[2],4))),(chars[3] ~= nil) and string.char(lor(lsh(chars[2],4), rsh(chars[3],2))) or "",(chars[4] ~= nil) and string.char(lor(lsh(chars[3],6) % 192, (chars[4]))) or "")
+        -- string.format can't  accept \0 
+        result = result .. (string.char(lor(lsh(chars[1],2), rsh(chars[2],4)))) ..
+                ((chars[3] ~= nil) and string.char(lor(lsh(chars[2],4), rsh(chars[3],2))) or "") ..
+                ((chars[4] ~= nil) and string.char(lor(lsh(chars[3],6) % 192, (chars[4]))) or "")
     end
     return result
 end
@@ -77,6 +87,8 @@ function pkg.test()
     assert(pkg.enc("fooba") == "Zm9vYmE=")
     assert(pkg.enc("foobar") == "Zm9vYmFy")
     pkg.dec("AAEAAAAAKQZR7XN2fn9dRDb928cALQAAA+g=")
+    local d = pkg.dec("AAEAAAAAKQZR7XN2fn9QUTb928cALQAAA54=")
+    assert(#d == 26 and d:byte(1,1) == 0 and d:byte(2,2) == 1 and d:byte(26, 26) == 0x9e)
     print("base64 test passed")
 end
 
